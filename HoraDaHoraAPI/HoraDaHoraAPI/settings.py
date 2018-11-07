@@ -38,11 +38,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'API'
 ]
 
-AUTH_USER_MODEL = 'API.CustomUser'
+# AUTH_USER_MODEL = 'API.CustomUser'
 
+# TODO arrumar o DEFAULT_PERMISSION_CLASSES
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.AllowAny',
