@@ -17,6 +17,28 @@ class ProfileSerializer(serializers.ModelSerializer):
         ]
 
 
+class ProfileUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = [
+            'id',
+            'hours',
+            'habilities',
+            'user',
+            'phone',
+            'photo',
+            'coins',
+        ]
+    def update(self, instance, validated_data):
+        instance.hours = validated_data.get('hours', instance.hours)
+        instance.habilities = validated_data.get('habilities', instance.habilities)
+        instance.phone = validated_data.get('phone', instance.phone)
+        instance.photo = validated_data.get('photo', instance.photo)
+        instance.coins = validated_data.get('coins', instance.coins)
+        instance.save()
+        return instance
+
+
 class UserCreateSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer(read_only=True)
 
@@ -42,6 +64,8 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
 
 class UserUpdateSerializer(serializers.ModelSerializer):
+    profile = ProfileSerializer(read_only=True)
+
     class Meta:
         model = User
         fields = [
@@ -49,6 +73,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
             'username',
             'email',
             'password',
+            'profile',
         ]
 
     def update(self, instance, validated_data):

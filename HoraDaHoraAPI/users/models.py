@@ -13,7 +13,7 @@ HABILITIES_CHOICES = (
 )
 
 class Profile(models.Model):
-    hours = models.IntegerField()
+    hours = models.IntegerField(default = 0)
     habilities = models.CharField(
         max_length = 2,
         choices = HABILITIES_CHOICES,
@@ -21,8 +21,8 @@ class Profile(models.Model):
         null = True
     )
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    phone = models.IntegerField()
-    photo = models.ImageField(upload_to='./media', blank=True)
-    coins = models.IntegerField()
+    phone = models.IntegerField(null=True)
+    photo = models.ImageField(upload_to='./media', null=True)
+    coins = models.IntegerField(default = 0)
     # aulas que tem q dar
     # aulas que recebeu
