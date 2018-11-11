@@ -10,8 +10,8 @@ from django.http import Http404
 from django.contrib.auth.models import User
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework.authentication import SessionAuthentication
-from users.models import Profile
-from users.serializers import ProfileSerializer, ProfileUpdateSerializer
+from users.models import Profile, Abilities
+from users.serializers import ProfileSerializer, ProfileUpdateSerializer, AbilitiesSerializer
 
 
 @permission_classes((permissions.AllowAny,))
@@ -42,8 +42,14 @@ class UserList(APIView):
 
             profile_data['user'] = user
 
+            abilities_data = profile_data.pop('abilities')
+
             profile = Profile.objects.create(**profile_data)
-            profile.save()
+
+            for abilitiest in abilities_data:
+                abilitiest = Abilities.objects.filter(id=abilitiest['id'])
+                profile.abilities.add(*abilitiest)
+                profile.save()
 
             profile_serializer = ProfileSerializer(profile)
 
@@ -77,9 +83,21 @@ class UserDetail(APIView):
 
             profile_data = request.data['profile']
 
-            Profile.objects.filter(user=user).update(
+            abilities_data = profile_data.pop('abilities')
+
+            profile = Profile.objects.filter(user=user).update(
                 **profile_data
             )
+
+            profile = Profile.objects.get(user=user)
+            profile.abilities.clear()
+
+            for abilitiest in abilities_data:
+                abilitiest = Abilities.objects.filter(id=abilitiest['id'])
+                profile.abilities.add(*abilitiest)
+                profile.save()
+            
+            profile_serializer = ProfileUpdateSerializer(profile)
 
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -102,6 +120,25 @@ class ProfileList(APIView):
     def post(self, request, format=None):
 
         serializer = ProfileSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AbilitiesList(APIView):
+    def get(self, request, format=None):
+
+        abilities = Abilities.objects.all()
+        serializer = AbilitiesSerializer(abilities, many=True)
+
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+
+        serializer = AbilitiesSerializer(data=request.data)
 
         if serializer.is_valid():
             serializer.save()

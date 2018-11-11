@@ -1,7 +1,17 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
-from users.models import Profile
+from users.models import Profile, Abilities
+
+
+class AbilitiesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Abilities
+        fields = [
+            'id',
+            'name',
+        ]
+
 
 class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -9,7 +19,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'hours',
-            'habilities',
+            'abilities',
             'user',
             'phone',
             'photo',
@@ -23,18 +33,23 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'hours',
-            'habilities',
+            'abilities',
             'user',
             'phone',
             'photo',
             'coins',
         ]
     def update(self, instance, validated_data):
+        abilities_data = validated_data.pop('abilities')
         instance.hours = validated_data.get('hours', instance.hours)
-        instance.habilities = validated_data.get('habilities', instance.habilities)
+        instance.abilities.remove()
         instance.phone = validated_data.get('phone', instance.phone)
         instance.photo = validated_data.get('photo', instance.photo)
         instance.coins = validated_data.get('coins', instance.coins)
+
+        # for abilities in abilities_data:
+        #     abilities, created = Abilities.objects.get_or_create(id=abilities['id'])
+        #     instance.abilities.set(abilities)
         instance.save()
         return instance
 
