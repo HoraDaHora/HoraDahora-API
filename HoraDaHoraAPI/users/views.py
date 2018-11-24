@@ -81,23 +81,23 @@ class UserDetail(APIView):
         if serializer.is_valid():
             serializer.save()
 
-            profile_data = request.data['profile']
+            # profile_data = request.data['profile']
 
-            abilities_data = profile_data.pop('abilities')
+            # abilities_data = profile_data.pop('abilities')
 
-            profile = Profile.objects.filter(user=user).update(
-                **profile_data
-            )
+            # profile = Profile.objects.filter(user=user).update(
+            #     **profile_data
+            # )
 
-            profile = Profile.objects.get(user=user)
-            profile.abilities.clear()
+            # profile = Profile.objects.get(user=user)
+            # profile.abilities.clear()
 
-            for abilitiest in abilities_data:
-                abilitiest = Abilities.objects.filter(id=abilitiest['id'])
-                profile.abilities.add(*abilitiest)
-                profile.save()
+            # for abilitiest in abilities_data:
+            #     abilitiest = Abilities.objects.filter(id=abilitiest['id'])
+            #     profile.abilities.add(*abilitiest)
+            #     profile.save()
             
-            profile_serializer = ProfileUpdateSerializer(profile)
+            # profile_serializer = ProfileUpdateSerializer(profile)
 
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -110,6 +110,7 @@ class UserDetail(APIView):
 
 
 class ProfileList(APIView):
+
     def get(self, request, format=None):
 
         profile = Profile.objects.all()
@@ -126,6 +127,41 @@ class ProfileList(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@permission_classes((permissions.AllowAny,))
+class ProfileDetail(APIView):
+
+    def get_object(self, pk):
+        try:
+            return Profile.objects.get(pk=pk)
+        except Profile.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        profile = self.get_object(pk)
+        serializer = ProfileSerializer(profile)
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        profile = self.get_object(pk=pk)
+
+        abilities_data = request.data.pop('abilities')
+
+        profile = Profile.objects.filter(pk=pk).update(
+            **request.data
+        )
+
+        profile = Profile.objects.get(pk=pk)
+        profile.abilities.clear()
+
+        for abilitiest in abilities_data:
+            abilitiest = Abilities.objects.filter(id=abilitiest['id'])
+            profile.abilities.add(*abilitiest)
+            profile.save()
+        
+        profile_serializer = ProfileUpdateSerializer(profile)
+
+        return Response(profile_serializer.data, status=status.HTTP_200_OK)
 
 
 class AbilitiesList(APIView):

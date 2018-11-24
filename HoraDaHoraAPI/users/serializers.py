@@ -14,6 +14,7 @@ class AbilitiesSerializer(serializers.ModelSerializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
+    abilities = AbilitiesSerializer(many=True, required=False)
     class Meta:
         model = Profile
         fields = [
