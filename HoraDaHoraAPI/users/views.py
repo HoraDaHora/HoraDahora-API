@@ -165,6 +165,7 @@ class ProfileDetail(APIView):
 
 
 class AbilitiesList(APIView):
+
     def get(self, request, format=None):
 
         abilities = Abilities.objects.all()
@@ -181,4 +182,27 @@ class AbilitiesList(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class AbilitiesUpdate(APIView):
+    def get_object(self, pk):
+        try:
+            return Abilities.objects.get(pk=pk)
+        except Profile.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        abilities = self.get_object(pk)
+        serializer = AbilitiesSerializer(abilities)
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        abilities = self.get_object(pk=pk)
+        serializer = AbilitiesSerializer(abilities, data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
