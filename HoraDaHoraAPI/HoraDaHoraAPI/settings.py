@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'API',
     'users',
+    'rest_framework_swagger',
 ]
 
 # AUTH_USER_MODEL = 'API.CustomUser'

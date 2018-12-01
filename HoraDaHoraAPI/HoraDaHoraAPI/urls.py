@@ -18,6 +18,10 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework_jwt.views import refresh_jwt_token, verify_jwt_token
 from rest_framework_jwt.views import obtain_jwt_token
+from django.conf.urls import include, url
+from rest_framework_swagger.views import get_swagger_view
+
+schema_view = get_swagger_view(title='Pastebin API')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,4 +30,5 @@ urlpatterns = [
     path('refresh-token/', refresh_jwt_token),
     path('verify-token/', verify_jwt_token),
     path('obtain-token/', obtain_jwt_token),
+    url(r'^$', schema_view)
 ]

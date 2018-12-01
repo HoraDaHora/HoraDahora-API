@@ -12,19 +12,113 @@ from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework.authentication import SessionAuthentication
 from users.models import Profile, Abilities
 from users.serializers import ProfileSerializer, ProfileUpdateSerializer, AbilitiesSerializer
+from rest_framework import mixins, status, viewsets
 
 
 @permission_classes((permissions.AllowAny,))
 class UserList(APIView):
-
     def get(self, request, format=None):
-
+        """
+        API endpoint that list all users.
+        ---
+        Body example:
+        ```
+        [
+            {
+                "id": 1,
+                "username": "user1",
+                "email": "top@person.com",
+                "profile": {
+                    "id": 1,
+                    "hours": 5,
+                    "abilities": [
+                        {
+                            "id": 1,
+                            "name": "Gamificacao"
+                        }
+                    ],
+                    "user": 1,
+                    "phone": 10,
+                    "photo": null,
+                    "coins": 0
+                }
+            },
+            {
+                "id": 2,
+                "username": "Silverson",
+                "email": "silver@son.com",
+                "profile": {
+                "id": 2,
+                "hours": 10,
+                "abilities": [
+                    {
+                    "id": 1,
+                    "name": "teste2"
+                    }
+                ],
+                "user": 2,
+                "phone": 96362067,
+                "photo": null,
+                "coins": 0
+                }
+            }
+        ]
+        ```
+        """
         users = User.objects.all()
         serializer = UserCreateSerializer(users, many=True)
 
         return Response(serializer.data)
 
     def post(self, request, format=None):
+        """
+          API endpoint that create the users.
+          ---
+          Body example:
+          ```
+          {
+            "username": "user2",
+            "email": "top@person.com",
+            "password": "teste",
+            "profile": {
+                "id": 1,
+                "hours": 15,
+                "abilities": [
+                    {
+                        "id": 1,
+                        "name": "Gamificacao"
+                    }
+                ],
+                "user": 1,
+                "phone": 990987610,
+                "photo": null,
+                "coins": 0
+            }
+          }
+          ```
+          Response example:
+          ```
+          {
+            "id": 1,
+            "username": "user2",
+            "email": "top@person.com",
+            "profile": {
+                "id": 1,
+                "hours": 15,
+                "abilities": [
+                    {
+                        "id": 1,
+                        "name": "Gamificacao"
+                    }
+                ],
+                "user": 1,
+                "phone": 990987610,
+                "photo": null,
+                "coins": 0
+            }
+          }
+          ```
+        """
 
         serializer = UserCreateSerializer(data=request.data)
 
@@ -70,11 +164,71 @@ class UserDetail(APIView):
             raise Http404
 
     def get(self, request, pk, format=None):
+        """
+          API endpoint that get specific user.
+          ---
+          Body example:
+          ```
+          {
+            "id": 1,
+            "username": "user2",
+            "email": "top@person.com",
+            "profile": {
+                "id": 1,
+                "hours": 5,
+                "abilities": [
+                    {
+                        "id": 1,
+                        "name": "Gamificacao"
+                    }
+                ],
+                "user": 1,
+                "phone": 10,
+                "photo": null,
+                "coins": 0
+            }
+          }
+          ```
+        """
         user = self.get_object(pk)
         serializer = UserCreateSerializer(user)
         return Response(serializer.data)
 
     def put(self, request, pk, format=None):
+        """
+          API endpoint that update the users.
+          ---
+          Body example:
+          ```
+          {
+            "username": "user2",
+            "email": "top@person.com",
+            "password": "teste"
+          }
+          ```
+          Response example:
+          ```
+          {
+            "id": 1,
+            "username": "user2",
+            "email": "top@person.com",
+            "profile": {
+                "id": 1,
+                "hours": 5,
+                "abilities": [
+                    {
+                        "id": 1,
+                        "name": "Gamificacao"
+                    }
+                ],
+                "user": 1,
+                "phone": 10,
+                "photo": null,
+                "coins": 0
+            }
+          }
+          ```
+        """
         user = self.get_object(pk=pk)
         serializer = UserUpdateSerializer(user, data=request.data)
 
@@ -103,6 +257,9 @@ class UserDetail(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, format=None):
+        """
+        API endpoint that delete users.
+        """
         user = self.get_object(pk)
         user.delete()
 
@@ -112,6 +269,43 @@ class UserDetail(APIView):
 class ProfileList(APIView):
 
     def get(self, request, format=None):
+        """
+        API endpoint that list all profiles.
+        ---
+        Body example:
+        ```
+        [
+            {
+                "id": 1,
+                "hours": 5,
+                "abilities": [
+                    {
+                        "id": 1,
+                        "name": "Gamificacao"
+                    }
+                ],
+                "user": 1,
+                "phone": 10,
+                "photo": null,
+                "coins": 0
+            },
+            {
+                "id": 2,
+                "hours": 10,
+                "abilities": [
+                    {
+                    "id": 1,
+                    "name": "teste2"
+                    }
+                ],
+                "user": 2,
+                "phone": 96362067,
+                "photo": null,
+                "coins": 0
+            }
+        ]
+        ```
+        """
 
         profile = Profile.objects.all()
         serializer = ProfileSerializer(profile, many=True)
@@ -119,6 +313,43 @@ class ProfileList(APIView):
         return Response(serializer.data)
 
     def post(self, request, format=None):
+        """
+          API endpoint that create the profiles.
+          ---
+          Body example:
+          ```
+          {
+            "hours": 15,
+            "abilities": [
+                {
+                    "id": 1,
+                    "name": "Gamificacao"
+                }
+            ],
+            "user": 1,
+            "phone": 990987610,
+            "photo": null,
+            "coins": 0
+          }
+          ```
+          Response example:
+          ```
+          {
+            "id": 1,
+            "hours": 15,
+            "abilities": [
+                {
+                    "id": 1,
+                    "name": "Gamificacao"
+                }
+            ],
+            "user": 1,
+            "phone": 990987610,
+            "photo": null,
+            "coins": 0
+          }
+          ```
+        """
 
         serializer = ProfileSerializer(data=request.data)
 
@@ -139,11 +370,71 @@ class ProfileDetail(APIView):
             raise Http404
 
     def get(self, request, pk, format=None):
+        """
+        API endpoint that list all profiles.
+        ---
+        Body example:
+        ```
+        [
+            {
+                "id": 1,
+                "hours": 5,
+                "abilities": [
+                    {
+                        "id": 1,
+                        "name": "Gamificacao"
+                    }
+                ],
+                "user": 1,
+                "phone": 10,
+                "photo": null,
+                "coins": 0
+            }
+        ]
+        ```
+        """
         profile = self.get_object(pk)
         serializer = ProfileSerializer(profile)
         return Response(serializer.data)
 
     def put(self, request, pk, format=None):
+        """
+          API endpoint that update the profiles.
+          ---
+          Body example:
+          ```
+          {
+            "hours": 15,
+            "abilities": [
+                {
+                    "id": 1,
+                    "name": "Gamificacao"
+                }
+            ],
+            "user": 1,
+            "phone": 990987610,
+            "photo": null,
+            "coins": 0
+          }
+          ```
+          Response example:
+          ```
+          {
+            "id": 1,
+            "hours": 15,
+            "abilities": [
+                {
+                    "id": 1,
+                    "name": "Gamificacao"
+                }
+            ],
+            "user": 1,
+            "phone": 990987610,
+            "photo": null,
+            "coins": 0
+          }
+          ```
+        """
         profile = self.get_object(pk=pk)
 
         abilities_data = request.data.pop('abilities')
@@ -168,6 +459,23 @@ class ProfileDetail(APIView):
 class AbilitiesList(APIView):
 
     def get(self, request, format=None):
+        """
+        API endpoint that list all abilities.
+        ---
+        Body example:
+        ```
+        [
+            {
+                "id": 1,
+                "name": "gamificacao"
+            },
+            {
+                "id": 2,
+                "name": "felicidade"
+            }
+        ]
+        ```
+        """
 
         abilities = Abilities.objects.all()
         serializer = AbilitiesSerializer(abilities, many=True)
@@ -175,7 +483,23 @@ class AbilitiesList(APIView):
         return Response(serializer.data)
 
     def post(self, request, format=None):
-
+        """
+          API endpoint that post the abilities.
+          ---
+          Body example:
+          ```
+          {
+            "name": "felicidade"
+          }
+          ```
+          Response example:
+          ```
+          {
+            "id": 3,
+            "name": "felicidade"
+          }
+          ```
+        """
         serializer = AbilitiesSerializer(data=request.data)
 
         if serializer.is_valid():
@@ -194,11 +518,42 @@ class AbilitiesUpdate(APIView):
             raise Http404
 
     def get(self, request, pk, format=None):
+        """
+        API endpoint that list all abilities.
+        ---
+        Body example:
+        ```
+        [
+            {
+                "id": 1,
+                "name": "gamificacao"
+            }
+        ]
+        ```
+        """
         abilities = self.get_object(pk)
         serializer = AbilitiesSerializer(abilities)
         return Response(serializer.data)
 
     def put(self, request, pk, format=None):
+        """
+          API endpoint that update the profiles.
+          ---
+          Body example:
+          ```
+          {
+            "id": 3,
+            "name": "felicidade"
+          }
+          ```
+          Response example:
+          ```
+          {
+            "id": 3,
+            "name": "felicidade"
+          }
+          ```
+        """
         abilities = self.get_object(pk=pk)
         serializer = AbilitiesSerializer(abilities, data=request.data)
 
