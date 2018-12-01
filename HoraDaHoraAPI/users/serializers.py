@@ -100,3 +100,16 @@ class UserUpdateSerializer(serializers.ModelSerializer):
                                                             ))
         instance.save()
         return instance
+
+class UserDetailsSerializer(serializers.ModelSerializer):
+    profile = ProfileSerializer(read_only=True)
+
+    class Meta:
+        model = User
+        fields = [
+            'id',
+            'username',
+            'email',
+            'password',
+            'profile',
+        ]

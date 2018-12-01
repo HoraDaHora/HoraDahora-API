@@ -45,6 +45,9 @@ INSTALLED_APPS = [
 ]
 
 # AUTH_USER_MODEL = 'API.CustomUser'
+REST_AUTH_SERIALIZERS = {
+   'USER_DETAILS_SERIALIZER': 'users.serializers.UserDetailsSerializer'
+}
 
 # TODO arrumar o DEFAULT_PERMISSION_CLASSES
 REST_FRAMEWORK = {
