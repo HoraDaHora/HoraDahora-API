@@ -32,17 +32,17 @@ class UserList(APIView):
             serializer.save()
 
             user = User.objects.get(username=request.data['username'])
-
+            
+            abilities_data = ''
             try:
                 profile_data = request.data['profile']
                 if profile_data.get('id'):
                     del profile_data['id']
+                    abilities_data = profile_data.pop('abilities')
             except KeyError:
                 profile_data = {}
 
             profile_data['user'] = user
-
-            abilities_data = profile_data.pop('abilities')
 
             profile = Profile.objects.create(**profile_data)
 
