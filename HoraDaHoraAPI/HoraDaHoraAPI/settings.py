@@ -121,6 +121,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+JWT_AUTH = {
+    'JWT_RESPONSE_PAYLOAD_HANDLER': 'users.utils.jwt_response_payload_handler',
+    'JWT_PAYLOAD_HANDLER': 'users.utils.jwt_payload_handler'
+}
+
+REST_USE_JWT = True
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
