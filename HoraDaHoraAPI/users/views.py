@@ -152,7 +152,7 @@ class UserList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@permission_classes((permissions.IsAuthenticatedOrReadOnly,))
+@permission_classes((permissions.AllowAny,))
 class UserDetail(APIView):
     authentication_classes = (JSONWebTokenAuthentication,
                               SessionAuthentication)
@@ -360,7 +360,7 @@ class ProfileList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@permission_classes((permissions.IsAuthenticatedOrReadOnly,))
+@permission_classes((permissions.AllowAny,))
 class ProfileDetail(APIView):
 
     def get_object(self, pk):
@@ -509,7 +509,7 @@ class AbilitiesList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@permission_classes((permissions.IsAuthenticatedOrReadOnly,))
+@permission_classes((permissions.AllowAny,))
 class AbilitiesUpdate(APIView):
     def get_object(self, pk):
         try:
