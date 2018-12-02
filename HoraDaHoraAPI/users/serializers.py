@@ -25,6 +25,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             'phone',
             'photo',
             'coins',
+            'points',
         ]
 
 
@@ -39,6 +40,7 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
             'phone',
             'photo',
             'coins',
+            'points',
         ]
     def update(self, instance, validated_data):
         abilities_data = validated_data.pop('abilities')

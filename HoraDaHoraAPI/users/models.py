@@ -13,5 +13,6 @@ class Profile(models.Model):
     phone = models.IntegerField(null=True)
     photo = models.ImageField(upload_to='./media', null=True)
     coins = models.IntegerField(default = 0)
+    points = models.IntegerField(default = 0)
     # aulas que tem q dar
     # aulas que recebeu
