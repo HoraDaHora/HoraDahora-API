@@ -37,7 +37,29 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'API',
+    'users',
+    'rest_framework_swagger',
 ]
+
+# AUTH_USER_MODEL = 'API.CustomUser'
+REST_AUTH_SERIALIZERS = {
+   'USER_DETAILS_SERIALIZER': 'users.serializers.UserDetailsSerializer'
+}
+
+# TODO arrumar o DEFAULT_PERMISSION_CLASSES
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.AllowAny',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -98,6 +120,13 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+JWT_AUTH = {
+    'JWT_RESPONSE_PAYLOAD_HANDLER': 'users.utils.jwt_response_payload_handler',
+    'JWT_PAYLOAD_HANDLER': 'users.utils.jwt_payload_handler'
+}
+
+REST_USE_JWT = True
 
 
 # Internationalization
