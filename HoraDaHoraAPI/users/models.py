@@ -16,3 +16,7 @@ class Profile(models.Model):
     points = models.IntegerField(default = 0)
     # aulas que tem q dar
     # aulas que recebeu
+
+class Availability(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateTimeField()

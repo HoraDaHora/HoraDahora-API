@@ -10,8 +10,8 @@ from django.http import Http404
 from django.contrib.auth.models import User
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework.authentication import SessionAuthentication
-from users.models import Profile, Abilities
-from users.serializers import ProfileSerializer, ProfileUpdateSerializer, AbilitiesSerializer
+from users.models import Profile, Abilities, Availability
+from users.serializers import ProfileSerializer, ProfileUpdateSerializer, AbilitiesSerializer, AvailabilitySerializer
 from rest_framework import mixins, status, viewsets
 
 
@@ -562,5 +562,60 @@ class AbilitiesUpdate(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AvailabilityList(APIView):
+
+    def get(self, request, format=None):
+        availability = Availability.objects.all()
+        serializer = AvailabilitySerializer(availability, many=True)
+
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = AvailabilitySerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@permission_classes((permissions.AllowAny,))
+class AvailabilityUpdate(APIView):
+    def get_object(self, pk):
+        try:
+            return Availability.objects.get(pk=pk)
+        except Availability.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        availability = self.get_object(pk)
+        serializer = AvailabilitySerializer(availability)
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        availability = self.get_object(pk=pk)
+        serializer = AvailabilitySerializer(availability, data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@permission_classes((permissions.AllowAny,))
+class AvailabilityUser(APIView):
+    def get_object(self, pk):
+        try:
+            return Availability.objects.filter(user=pk)
+        except Availability.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        availability = self.get_object(pk)
+        serializer = AvailabilitySerializer(availability, many=True)
+        return Response(serializer.data)
 
 
