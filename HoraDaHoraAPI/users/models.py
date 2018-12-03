@@ -24,8 +24,15 @@ class Profile(models.Model):
     # aulas que recebeu
 
 class Availability(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name='availability', on_delete=models.CASCADE)
     date = models.DateTimeField()
+
+    class Meta:
+        unique_together = ('id', 'date')
+        ordering = ['date']
+
+    def __unicode__(self):
+        return '%d: %s' % (str(self.date))
 
 class Notification(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner')

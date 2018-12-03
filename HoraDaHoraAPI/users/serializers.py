@@ -82,7 +82,7 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
 
 class UserCreateSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer(read_only=True)
-
+    availability = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     class Meta:
         model = User
         fields = [
@@ -91,6 +91,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
             'email',
             'password',
             'profile',
+            'availability',
         ]
         extra_kwargs = {'password': {'write_only': True}}
 
@@ -106,6 +107,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
 class UserUpdateSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer(read_only=True)
+    availability = serializers.StringRelatedField(many=True, read_only=True)
 
     class Meta:
         model = User
@@ -115,6 +117,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
             'email',
             'password',
             'profile',
+            'availability',
         ]
 
     def update(self, instance, validated_data):
@@ -128,6 +131,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
 
 class UserDetailsSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer(read_only=True)
+    availability = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
 
     class Meta:
         model = User
@@ -137,4 +141,5 @@ class UserDetailsSerializer(serializers.ModelSerializer):
             'email',
             'password',
             'profile',
+            'availability',
         ]
