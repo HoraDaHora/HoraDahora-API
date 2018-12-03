@@ -1,7 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-# Create your models here.
+
+STATUS_CHOICES = (
+    (1, 'Aguardando resposta'),
+    (2, 'Recusada'),
+    (3, 'Aceita'),
+    (4, 'Concluida')
+)
 
 class Abilities(models.Model):
     name = models.CharField(max_length = 20)
@@ -20,3 +26,10 @@ class Profile(models.Model):
 class Availability(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateTimeField()
+
+class Notification(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name='owner')
+    interested = models.ForeignKey(User, on_delete=models.CASCADE, related_name='interested')
+    date = models.ForeignKey(Availability, on_delete=models.CASCADE)
+    status = models.IntegerField(choices=STATUS_CHOICES, default=1)
+    hours = models.IntegerField(default=0)

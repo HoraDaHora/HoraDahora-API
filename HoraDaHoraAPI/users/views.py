@@ -10,8 +10,10 @@ from django.http import Http404
 from django.contrib.auth.models import User
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework.authentication import SessionAuthentication
-from users.models import Profile, Abilities, Availability
-from users.serializers import ProfileSerializer, ProfileUpdateSerializer, AbilitiesSerializer, AvailabilitySerializer
+from users.models import Profile, Abilities, Availability, Notification
+from users.serializers import (ProfileSerializer, ProfileUpdateSerializer, 
+                                AbilitiesSerializer, AvailabilitySerializer,
+                                NotificationSerializer)
 from rest_framework import mixins, status, viewsets
 
 
@@ -617,5 +619,70 @@ class AvailabilityUser(APIView):
         availability = self.get_object(pk)
         serializer = AvailabilitySerializer(availability, many=True)
         return Response(serializer.data)
+
+
+class NotificationList(APIView):
+    def get(self, request, format=None):
+        notification = Notification.objects.all()
+        serializer = NotificationSerializer(notification, many=True)
+
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = NotificationSerializer(data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@permission_classes((permissions.AllowAny,))
+class NotificationUpdate(APIView):
+    def get_object(self, pk):
+        try:
+            return Notification.objects.get(pk=pk)
+        except Notification.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        notification = self.get_object(pk)
+        serializer = NotificationSerializer(notification)
+        return Response(serializer.data)
+
+    def put(self, request, pk, format=None):
+        notification = self.get_object(pk=pk)
+        serializer = NotificationSerializer(notification, data=request.data)
+
+        if request.data['status'] == 4:
+            profile = Profile.objects.get(user=request.data['owner'])
+            profile.points += request.data['hours']
+            profile.save()
+
+            profile = Profile.objects.get(user=request.data['interested'])
+            profile.points -= request.data['hours']
+            profile.save()
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@permission_classes((permissions.AllowAny,))
+class NotificationUser(APIView):
+    def get_object(self, pk):
+        try:
+            return Notification.objects.filter(owner=pk)
+        except Notification.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        notification = self.get_object(pk)
+        serializer = NotificationSerializer(notification, many=True)
+        return Response(serializer.data)
+
+
 
 

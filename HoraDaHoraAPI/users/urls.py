@@ -11,4 +11,7 @@ urlpatterns = [
     path('availability/', views.AvailabilityList.as_view(), name='availability'),
     path('availability/<int:pk>/', views.AvailabilityUpdate.as_view(), name='availability-update'),
     path('availabilityUser/<int:pk>/', views.AvailabilityUser.as_view(), name='availability-update'),
+    path('notification/', views.NotificationList.as_view(), name='notification'),
+    path('notification/<int:pk>/', views.NotificationUpdate.as_view(), name='notification-update'),
+    path('notificationUser/<int:pk>/', views.NotificationUser.as_view(), name='notification-update'),
 ]

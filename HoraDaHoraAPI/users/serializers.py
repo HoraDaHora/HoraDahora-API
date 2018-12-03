@@ -1,7 +1,20 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from django.contrib.auth.hashers import make_password
-from users.models import Profile, Abilities, Availability
+from users.models import Profile, Abilities, Availability, Notification
+
+
+class NotificationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification
+        fields = [
+            'id',
+            'owner',
+            'interested',
+            'date',
+            'status',
+            'hours',
+        ]
 
 
 class AvailabilitySerializer(serializers.ModelSerializer):
@@ -12,6 +25,7 @@ class AvailabilitySerializer(serializers.ModelSerializer):
             'user',
             'date',
         ]
+
 
 class AbilitiesSerializer(serializers.ModelSerializer):
     class Meta:
