@@ -42,7 +42,6 @@ class ProfileSerializer(serializers.ModelSerializer):
         model = Profile
         fields = [
             'id',
-            'hours',
             'abilities',
             'user',
             'phone',
@@ -57,7 +56,6 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
         model = Profile
         fields = [
             'id',
-            'hours',
             'abilities',
             'user',
             'phone',

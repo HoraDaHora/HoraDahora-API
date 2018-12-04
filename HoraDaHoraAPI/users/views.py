@@ -658,10 +658,12 @@ class NotificationUpdate(APIView):
         if request.data['status'] == 4:
             profile = Profile.objects.get(user=request.data['owner'])
             profile.points += request.data['hours']
+            profile.coins += request.data['hours']
             profile.save()
 
             profile = Profile.objects.get(user=request.data['interested'])
             profile.points -= request.data['hours']
+            profile.coins -= request.data['hours']
             profile.save()
 
         if serializer.is_valid():
