@@ -654,16 +654,19 @@ class NotificationUpdate(APIView):
     def put(self, request, pk, format=None):
         notification = self.get_object(pk=pk)
         serializer = NotificationSerializer(notification, data=request.data)
+        date = Availability.objects.get(id=request.data['date'])
+        startDate = date.inicial.split(':')
+        endDate = date.final.split(':')
 
         if request.data['status'] == 4:
             profile = Profile.objects.get(user=request.data['owner'])
-            profile.points += request.data['hours']
-            profile.coins += request.data['hours']
+            profile.points += (int(endDate[0]) - int(startDate[0]))
+            profile.coins += (int(endDate[0]) - int(startDate[0]))
             profile.save()
 
             profile = Profile.objects.get(user=request.data['interested'])
-            profile.points -= request.data['hours']
-            profile.coins -= request.data['hours']
+            profile.points -= (int(endDate[0]) - int(startDate[0]))
+            profile.coins -= (int(endDate[0]) - int(startDate[0]))
             profile.save()
 
         if serializer.is_valid():

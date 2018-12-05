@@ -13,7 +13,7 @@ class NotificationSerializer(serializers.ModelSerializer):
             'interested',
             'date',
             'status',
-            'hours',
+            # 'hours',
         ]
 
 
@@ -24,6 +24,8 @@ class AvailabilitySerializer(serializers.ModelSerializer):
             'id',
             'user',
             'date',
+            'inicial',
+            'final',
         ]
 
 

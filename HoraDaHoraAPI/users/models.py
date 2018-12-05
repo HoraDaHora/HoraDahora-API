@@ -24,7 +24,9 @@ class Profile(models.Model):
 
 class Availability(models.Model):
     user = models.ForeignKey(User, related_name='availability', on_delete=models.CASCADE)
-    date = models.DateTimeField()
+    date = models.CharField(max_length=10, default='')
+    inicial = models.CharField(max_length=10, default='')
+    final = models.CharField(max_length=10, default='')
 
     class Meta:
         unique_together = ('id', 'date')
@@ -38,4 +40,4 @@ class Notification(models.Model):
     interested = models.ForeignKey(User, on_delete=models.CASCADE, related_name='interested')
     date = models.ForeignKey(Availability, on_delete=models.CASCADE)
     status = models.IntegerField(choices=STATUS_CHOICES, default=1)
-    hours = models.IntegerField(default=0)
+    # hours = models.IntegerField(default=0)
