@@ -1,1 +1,1 @@
-web: gunicorn HoraDaHoraAPI.wsgi
+web: gunicorn --chdir HoraDaHoraAPI HoraDaHoraAPI.wsgi
