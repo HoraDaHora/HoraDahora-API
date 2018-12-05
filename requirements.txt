@@ -5,3 +5,4 @@ django-rest-auth
 Pillow
 gunicorn
 django-rest-swagger
+django-heroku
